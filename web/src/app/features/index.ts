@@ -7,11 +7,21 @@ import { Routes } from '@angular/router';
  * app.routes.ts spreads FEATURE_ROUTES before the wildcard catch-all so new
  * feature routes are picked up automatically.
  *
- * Example (in features/my-feature/my-feature.routes.ts):
- *
- *   import { FEATURE_ROUTES } from '../index';
- *   FEATURE_ROUTES.push({ path: 'my-feature', loadComponent: () => ... });
- *
- * Or add routes here directly.
+ * Signed-in feature pages are children of the authenticated LayoutComponent
+ * shell. An empty-path parent with no matching child lets the router fall
+ * through to the remaining top-level routes (landing, login, ...).
  */
-export const FEATURE_ROUTES: Routes = [];
+export const FEATURE_ROUTES: Routes = [
+  {
+    path: '',
+    loadComponent: () => import('../shared/layout.component').then(m => m.LayoutComponent),
+    data: { rendersSupportFooterInLayout: true },
+    children: [
+      // Story: create-service
+      {
+        path: 'services',
+        loadComponent: () => import('./services/services.component').then(m => m.ServicesComponent),
+      },
+    ],
+  },
+];
