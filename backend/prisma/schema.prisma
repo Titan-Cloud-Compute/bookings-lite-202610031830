@@ -137,6 +137,27 @@ model AppointmentCancellation {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
+// Appointment reminders (Story: reminder-notifications) — one row per reminder
+// sent. FKs live in migration 0010 so Appointment / User are not altered.
+// ─────────────────────────────────────────────────────────────────────────────
+
+model AppointmentReminder {
+  id            String   @id @default(cuid())
+  appointmentId String
+  customerId    String
+  kind          String   @default("24H")
+  subject       String
+  message       String
+  serviceName   String
+  providerName  String
+  startsAt      DateTime
+  sentAt        DateTime @default(now())
+
+  @@unique([appointmentId, kind])
+  @@index([customerId, sentAt])
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
 // Audit log
 // ─────────────────────────────────────────────────────────────────────────────
 

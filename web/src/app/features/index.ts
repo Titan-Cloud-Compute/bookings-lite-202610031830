@@ -42,6 +42,11 @@ export const FEATURE_ROUTES: Routes = [
         path: 'appointments',
         loadComponent: () => import('./appointments/my-appointments.component').then(m => m.MyAppointmentsComponent),
       },
+      // Story: reminder-notifications
+      {
+        path: 'reminders',
+        loadComponent: () => import('./reminders/reminders.component').then(m => m.RemindersComponent),
+      },
     ],
   },
 ];
