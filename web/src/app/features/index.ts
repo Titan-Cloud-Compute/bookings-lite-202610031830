@@ -37,6 +37,11 @@ export const FEATURE_ROUTES: Routes = [
         path: 'provider-dashboard',
         loadComponent: () => import('./appointments/provider-dashboard.component').then(m => m.ProviderDashboardComponent),
       },
+      // Story: cancel-appointment
+      {
+        path: 'appointments',
+        loadComponent: () => import('./appointments/my-appointments.component').then(m => m.MyAppointmentsComponent),
+      },
     ],
   },
 ];

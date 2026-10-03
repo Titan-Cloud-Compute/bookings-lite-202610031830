@@ -127,6 +127,15 @@ model Appointment {
   @@index([customerId])
 }
 
+// Story: cancel-appointment — depends on Appointment (owned by book-appointment).
+model AppointmentCancellation {
+  id            String   @id @default(cuid())
+  appointmentId String   @unique
+  cancelledById String
+  late          Boolean  @default(false)
+  cancelledAt   DateTime @default(now())
+}
+
 // ─────────────────────────────────────────────────────────────────────────────
 // Audit log
 // ─────────────────────────────────────────────────────────────────────────────

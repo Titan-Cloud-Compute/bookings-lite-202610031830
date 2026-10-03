@@ -8,6 +8,7 @@ import { ServicesModule } from './services/services.module';
 import { AvailabilityModule } from './availability/availability.module';
 import { AppointmentsModule } from './appointments/appointments.module';
 import { ProviderDashboardModule } from './provider-dashboard/provider-dashboard.module';
+import { CancellationsModule } from './cancellations/cancellations.module';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const FEATURE_MODULES: any[] = [ServicesModule, AvailabilityModule, AppointmentsModule, ProviderDashboardModule];
+export const FEATURE_MODULES: any[] = [ServicesModule, AvailabilityModule, AppointmentsModule, ProviderDashboardModule, CancellationsModule];
