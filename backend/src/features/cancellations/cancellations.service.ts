@@ -15,6 +15,12 @@ export interface CancellationView {
   cancelledAt: Date;
 }
 
+export interface CancellationRecord {
+  appointmentId: string;
+  late: boolean;
+  cancelledAt: Date;
+}
+
 @Injectable()
 export class CancellationsService {
   private readonly logger = new Logger('CancellationsService');
@@ -53,6 +59,15 @@ export class CancellationsService {
 
     await this.notifyProvider(appt, late, customerId);
     return { appointmentId: appt.id, status: CANCELLED, late: record.late, cancelledAt: record.cancelledAt };
+  }
+
+  /** Cancellation records for appointments the customer cancelled (survives reloads). */
+  async listMine(customerId: string): Promise<CancellationRecord[]> {
+    return this.prisma.appointmentCancellation.findMany({
+      where: { cancelledById: customerId },
+      select: { appointmentId: true, late: true, cancelledAt: true },
+      orderBy: { cancelledAt: 'desc' },
+    });
   }
 
   /** Notify the provider and audit; never fails the cancellation. */

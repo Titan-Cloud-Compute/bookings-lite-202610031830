@@ -94,6 +94,17 @@ export class MyAppointmentsComponent implements OnInit {
       this.appointments.set(Array.isArray(rows) ? rows : []);
     } catch {
       this.error.set('Could not load your appointments.');
+      return;
+    }
+    try {
+      const cancellations = await firstValueFrom(
+        this.http.get<CancellationResult[]>('api/appointments/mine/cancellations', { withCredentials: true }),
+      );
+      if (Array.isArray(cancellations)) {
+        this.lateIds.set(new Set(cancellations.filter((c) => c.late).map((c) => c.appointmentId)));
+      }
+    } catch {
+      // Late flags are best-effort; the list still renders without them.
     }
   }
 
