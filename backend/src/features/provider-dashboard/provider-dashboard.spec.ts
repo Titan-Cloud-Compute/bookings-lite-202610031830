@@ -1,23 +1,34 @@
 import type { Request } from 'express';
+import { INestApplication } from '@nestjs/common';
+import { Test } from '@nestjs/testing';
+import { JwtModule, JwtService } from '@nestjs/jwt';
+import request = require('supertest');
+import { JwtAuthGuard } from '../../auth/jwt-auth.guard';
+import { RolesGuard } from '../../auth/roles.guard';
 import { ProviderDashboardController } from './provider-dashboard.controller';
 import { ProviderDashboardService } from './provider-dashboard.service';
 
+// eslint-disable-next-line @typescript-eslint/no-require-imports
+const cookieParser = require('cookie-parser');
+
+const SECRET = 'provider-dashboard-test-secret';
 const NOW = new Date('2999-01-10T00:00:00.000Z');
 const at = (iso: string) => new Date(iso);
 
-function makeDeps() {
-  const appointments = [
-    { id: 'late', serviceId: 'svc1', customerId: 'cust1', providerId: 'prov1', startsAt: at('2999-01-20T10:00:00.000Z'), endsAt: at('2999-01-20T11:00:00.000Z'), status: 'BOOKED' },
-    { id: 'early', serviceId: 'svc1', customerId: 'cust2', providerId: 'prov1', startsAt: at('2999-01-11T09:00:00.000Z'), endsAt: at('2999-01-11T10:00:00.000Z'), status: 'BOOKED' },
-    { id: 'mid', serviceId: 'svc2', customerId: 'cust1', providerId: 'prov1', startsAt: at('2999-01-15T14:00:00.000Z'), endsAt: at('2999-01-15T15:00:00.000Z'), status: 'BOOKED' },
-    { id: 'past', serviceId: 'svc1', customerId: 'cust1', providerId: 'prov1', startsAt: at('2999-01-01T09:00:00.000Z'), endsAt: at('2999-01-01T10:00:00.000Z'), status: 'BOOKED' },
-    { id: 'cancelled', serviceId: 'svc1', customerId: 'cust1', providerId: 'prov1', startsAt: at('2999-01-12T09:00:00.000Z'), endsAt: at('2999-01-12T10:00:00.000Z'), status: 'CANCELLED' },
-    { id: 'other', serviceId: 'svc3', customerId: 'cust1', providerId: 'prov2', startsAt: at('2999-01-13T09:00:00.000Z'), endsAt: at('2999-01-13T10:00:00.000Z'), status: 'BOOKED' },
-  ];
-  const prisma: any = {
+const APPOINTMENTS = [
+  { id: 'late', serviceId: 'svc1', customerId: 'cust1', providerId: 'prov1', startsAt: at('2999-01-20T10:00:00.000Z'), endsAt: at('2999-01-20T11:00:00.000Z'), status: 'BOOKED' },
+  { id: 'early', serviceId: 'svc1', customerId: 'cust2', providerId: 'prov1', startsAt: at('2999-01-11T09:00:00.000Z'), endsAt: at('2999-01-11T10:00:00.000Z'), status: 'BOOKED' },
+  { id: 'mid', serviceId: 'svc2', customerId: 'cust1', providerId: 'prov1', startsAt: at('2999-01-15T14:00:00.000Z'), endsAt: at('2999-01-15T15:00:00.000Z'), status: 'BOOKED' },
+  { id: 'past', serviceId: 'svc1', customerId: 'cust1', providerId: 'prov1', startsAt: at('2020-01-01T09:00:00.000Z'), endsAt: at('2020-01-01T10:00:00.000Z'), status: 'BOOKED' },
+  { id: 'cancelled', serviceId: 'svc1', customerId: 'cust1', providerId: 'prov1', startsAt: at('2999-01-12T09:00:00.000Z'), endsAt: at('2999-01-12T10:00:00.000Z'), status: 'CANCELLED' },
+  { id: 'other', serviceId: 'svc3', customerId: 'cust1', providerId: 'prov2', startsAt: at('2999-01-13T09:00:00.000Z'), endsAt: at('2999-01-13T10:00:00.000Z'), status: 'BOOKED' },
+];
+
+function makePrismaMock() {
+  return {
     appointment: {
       findMany: jest.fn(async ({ where }: any) =>
-        appointments
+        APPOINTMENTS
           .filter((a) => a.providerId === where.providerId && a.status === where.status && a.startsAt >= where.startsAt.gte)
           .sort((a, b) => a.startsAt.getTime() - b.startsAt.getTime())),
     },
@@ -34,12 +45,17 @@ function makeDeps() {
       ]),
     },
   };
+}
+
+function makeDeps() {
+  const prisma: any = makePrismaMock();
   const service = new ProviderDashboardService(prisma);
   return { prisma, service, ctrl: new ProviderDashboardController(service) };
 }
 
-const reqFor = (userId: string) => ({ session: { userId, role: 'USER', firmId: null } }) as unknown as Request;
+const reqFor = (userId: string) => ({ session: { userId, role: 'MANAGER', firmId: null } }) as unknown as Request;
 
+// ─── Part (a): service unit tests ───────────────────────────────────────────
 describe('provider-dashboard', () => {
   it('lists every upcoming appointment in chronological order, excluding past and cancelled', async () => {
     const { service } = makeDeps();
@@ -61,5 +77,64 @@ describe('provider-dashboard', () => {
   it('rejects an unauthenticated request', async () => {
     const { ctrl } = makeDeps();
     await expect(ctrl.upcoming({ session: {} } as unknown as Request)).rejects.toThrow('not authenticated');
+  });
+
+  it('does not return appointments belonging to another provider', async () => {
+    const { service } = makeDeps();
+    const list = await service.listUpcoming('prov1', NOW);
+    expect(list.every((a) => a.providerId === 'prov1')).toBe(true);
+    expect(list.find((a) => a.id === 'other')).toBeUndefined();
+  });
+});
+
+// ─── Part (b): HTTP integration tests ────────────────────────────────────────
+describe('provider-dashboard HTTP', () => {
+  let app: INestApplication;
+  let jwt: JwtService;
+  const cookieName = process.env.SESSION_COOKIE_NAME ?? 'session';
+
+  const cookieFor = async (role: 'USER' | 'MANAGER' | 'ADMIN', userId = 'prov1'): Promise<string> =>
+    `${cookieName}=${await jwt.signAsync({ userId, role, firmId: null })}`;
+
+  beforeAll(async () => {
+    const prisma: any = makePrismaMock();
+    const moduleRef = await Test.createTestingModule({
+      imports: [JwtModule.register({ secret: SECRET, signOptions: { expiresIn: '1h' } })],
+      controllers: [ProviderDashboardController],
+      providers: [
+        JwtAuthGuard,
+        RolesGuard,
+        { provide: ProviderDashboardService, useValue: new ProviderDashboardService(prisma) },
+      ],
+    }).compile();
+    app = moduleRef.createNestApplication();
+    app.use(cookieParser());
+    await app.init();
+    jwt = moduleRef.get(JwtService);
+  });
+
+  afterAll(async () => {
+    await app.close();
+  });
+
+  it('401 with no session cookie', async () => {
+    await request(app.getHttpServer())
+      .get('/provider/appointments/upcoming')
+      .expect(401);
+  });
+
+  it('403 for USER role', async () => {
+    await request(app.getHttpServer())
+      .get('/provider/appointments/upcoming')
+      .set('Cookie', await cookieFor('USER'))
+      .expect(403);
+  });
+
+  it('200 for MANAGER role with chronological list', async () => {
+    const res = await request(app.getHttpServer())
+      .get('/provider/appointments/upcoming')
+      .set('Cookie', await cookieFor('MANAGER', 'prov1'))
+      .expect(200);
+    expect(res.body.map((a: any) => a.id)).toEqual(['early', 'mid', 'late']);
   });
 });
