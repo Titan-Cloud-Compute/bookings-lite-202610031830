@@ -21,4 +21,9 @@ export class MailerService {
     // integration tests can capture it without an SMTP relay.
     this.logger.log(`[password-reset] token for ${email}: ${token}`);
   }
+
+  /** Send a transactional notification (e.g. booking confirmation) to `email`. */
+  async sendNotification(email: string, subject: string, body: string): Promise<void> {
+    this.logger.log(`[notification] to ${email}: ${subject} — ${body}`);
+  }
 }

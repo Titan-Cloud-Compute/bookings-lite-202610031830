@@ -106,6 +106,28 @@ model AvailabilityBlock {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
+// Appointments (Story: book-appointment) — a customer's booking of a service slot.
+// FKs (serviceId → Service, customerId → User) live in migration 0007 so the
+// Service / User models (owned by other cards) are not altered. A partial unique
+// index on (providerId, startsAt) WHERE status = 'BOOKED' blocks double booking.
+// ─────────────────────────────────────────────────────────────────────────────
+
+model Appointment {
+  id         String   @id @default(cuid())
+  serviceId  String
+  customerId String
+  providerId String
+  startsAt   DateTime
+  endsAt     DateTime
+  status     String   @default("BOOKED")
+  createdAt  DateTime @default(now())
+
+  @@index([serviceId, startsAt])
+  @@index([providerId, startsAt])
+  @@index([customerId])
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
 // Audit log
 // ─────────────────────────────────────────────────────────────────────────────
 
