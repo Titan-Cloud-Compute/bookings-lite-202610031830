@@ -22,6 +22,11 @@ export const FEATURE_ROUTES: Routes = [
         path: 'services',
         loadComponent: () => import('./services/services.component').then(m => m.ServicesComponent),
       },
+      // Story: set-availability
+      {
+        path: 'availability',
+        loadComponent: () => import('./availability/availability.component').then(m => m.AvailabilityComponent),
+      },
     ],
   },
 ];
