@@ -30,6 +30,9 @@ export const RequireFirmUser = (): ReturnType<typeof SetMetadata> =>
   Roles('USER', 'MANAGER', 'ADMIN');
 export const RequireAdmin = (): ReturnType<typeof SetMetadata> =>
   Roles('ADMIN');
+/** MANAGER or ADMIN (admins can do everything a manager can). */
+export const RequireManager = (): ReturnType<typeof SetMetadata> =>
+  Roles('MANAGER', 'ADMIN');
 
 @Injectable()
 export class RolesGuard implements CanActivate {
