@@ -1,31 +1,12 @@
 import { Component } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { ProviderDashboardComponent } from '../features/appointments/provider-dashboard.component';
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [FormsModule],
+  imports: [ProviderDashboardComponent],
   template: `
-    <div class="dashboard-page" data-placeholder>
-      <header class="page-header">
-        <h1>Dashboard</h1>
-        <p class="subtitle">Welcome to the platform.</p>
-      </header>
-      <div class="placeholder-card">
-        <p class="placeholder-text">Your content will appear here.</p>
-        <form class="placeholder-form" (ngSubmit)="$event.preventDefault()">
-          <div class="form-group">
-            <label for="ph-field-1">Field 1</label>
-            <input type="text" id="ph-field-1" [(ngModel)]="field1" name="field1" placeholder="Enter value…" />
-          </div>
-          <div class="form-group">
-            <label for="ph-field-2">Field 2</label>
-            <input type="text" id="ph-field-2" [(ngModel)]="field2" name="field2" placeholder="Enter value…" />
-          </div>
-          <button type="submit" class="btn-primary" disabled>Submit</button>
-        </form>
-      </div>
-    </div>
+    <app-provider-dashboard />
   `,
   styles: [`
     .dashboard-page {
@@ -94,7 +75,4 @@ import { FormsModule } from '@angular/forms';
     }
   `]
 })
-export class DashboardComponent {
-  field1 = '';
-  field2 = '';
-}
+export class DashboardComponent {}
