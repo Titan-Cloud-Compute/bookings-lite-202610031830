@@ -5,6 +5,7 @@ import { MailerService } from '../../auth/mailer.service';
 import { AuditService } from '../../audit/audit.service';
 import { AvailabilityService } from '../availability/availability.service';
 import { BookAppointmentDto, SLOT_UNAVAILABLE } from './appointments.schema';
+import { RemindersService } from '../reminders/reminders.service';
 
 export interface SlotView {
   startsAt: string;
@@ -62,6 +63,7 @@ export class AppointmentsService {
     private readonly mailer: MailerService,
     private readonly audit: AuditService,
     @Optional() private readonly availability?: AvailabilityService,
+    @Optional() private readonly reminders?: RemindersService,
   ) {}
 
   /**
@@ -130,6 +132,9 @@ export class AppointmentsService {
     }
 
     await this.notify(appointment, service.name);
+    // reminder-notifications: send immediately if already inside the reminder window (non-blocking).
+    this.reminders?.sendDueReminders(new Date(), customerId).catch((err) =>
+      this.logger.warn(`reminder sweep after booking failed: ${(err as Error).message}`));
     return appointment;
   }
 

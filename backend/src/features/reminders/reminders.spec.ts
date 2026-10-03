@@ -80,4 +80,17 @@ describe('reminder-notifications', () => {
     expect(rows).toHaveLength(1);
     expect(rows[0]).toMatchObject({ appointmentId: 'a1', serviceName: 'Haircut', providerName: 'Pat Provider' });
   });
+
+  it('treats the nearest slot just past 24h as due (grace window)', async () => {
+    const { service } = makeDeps([appt('a1', new Date(NOW.getTime() + 24 * H + 30 * 60_000))]);
+    expect(await service.sendDueReminders(NOW)).toBe(1);
+  });
+
+  it('listMine sweeps due reminders for the customer before reading', async () => {
+    const now = new Date();
+    const { service, mailer } = makeDeps([appt('a1', new Date(now.getTime() + 24 * H + 10 * 60_000))]);
+    const rows = await service.listMine('cust1');
+    expect(rows).toHaveLength(1);
+    expect(mailer.sendNotification).toHaveBeenCalledTimes(1);
+  });
 });

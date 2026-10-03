@@ -6,6 +6,8 @@ import { MailerService } from '../../auth/mailer.service';
 export const REMINDER_KIND = '24H';
 export const REMINDER_LEAD_MS = 24 * 60 * 60 * 1000;
 export const REMINDER_POLL_MS = 60 * 1000;
+/** Slots are spaced by service duration, so the nearest slot to "24h out" can start a bit later. */
+export const REMINDER_GRACE_MS = 60 * 60 * 1000;
 export const REMINDER_SUBJECT = 'Appointment reminder';
 
 export interface ReminderView {
@@ -60,10 +62,14 @@ export class RemindersService implements OnModuleInit, OnModuleDestroy {
   }
 
   /** Send every due reminder as of `now`. Returns the number sent. */
-  async sendDueReminders(now: Date): Promise<number> {
-    const horizon = new Date(now.getTime() + REMINDER_LEAD_MS);
+  async sendDueReminders(now: Date, customerId?: string): Promise<number> {
+    const horizon = new Date(now.getTime() + REMINDER_LEAD_MS + REMINDER_GRACE_MS);
     const due = await this.prisma.appointment.findMany({
-      where: { status: 'BOOKED', startsAt: { gt: now, lte: horizon } },
+      where: {
+        status: 'BOOKED',
+        startsAt: { gt: now, lte: horizon },
+        ...(customerId ? { customerId } : {}),
+      },
       orderBy: { startsAt: 'asc' },
     });
     if (due.length === 0) return 0;
@@ -122,7 +128,12 @@ export class RemindersService implements OnModuleInit, OnModuleDestroy {
     return sent;
   }
 
-  listMine(customerId: string): Promise<ReminderView[]> {
+  async listMine(customerId: string): Promise<ReminderView[]> {
+    try {
+      await this.sendDueReminders(new Date(), customerId);
+    } catch (err) {
+      this.logger.warn(`on-read reminder sweep failed: ${(err as Error).message}`);
+    }
     return this.prisma.appointmentReminder.findMany({
       where: { customerId },
       orderBy: { sentAt: 'desc' },
