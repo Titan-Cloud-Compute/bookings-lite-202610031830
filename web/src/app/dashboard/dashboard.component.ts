@@ -6,7 +6,9 @@ import { ProviderDashboardComponent } from '../features/appointments/provider-da
   standalone: true,
   imports: [ProviderDashboardComponent],
   template: `
-    <app-provider-dashboard />
+    <div data-placeholder>
+      <app-provider-dashboard />
+    </div>
   `,
   styles: [`
     .dashboard-page {
