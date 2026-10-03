@@ -32,6 +32,11 @@ export const FEATURE_ROUTES: Routes = [
         path: 'book',
         loadComponent: () => import('./appointments/book-appointment.component').then(m => m.BookAppointmentComponent),
       },
+      // Story: provider-dashboard
+      {
+        path: 'provider-dashboard',
+        loadComponent: () => import('./appointments/provider-dashboard.component').then(m => m.ProviderDashboardComponent),
+      },
     ],
   },
 ];
