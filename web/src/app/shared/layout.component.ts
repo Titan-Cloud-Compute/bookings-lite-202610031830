@@ -72,7 +72,7 @@ import { NavItem, FIRM_NAV_ITEMS, ADMIN_NAV_ITEMS, SHARED_NAV_ITEMS, ADMIN_TAB_M
              style-encapsulation attribute, so the shell can actually give it
              the leftover vertical space (a rule targeting the routed host
              directly can never match — it has no _ngcontent attribute). -->
-        <div class="routed-area" [class.routed-area-fit]="routedAreaFits()">
+        <div class="routed-area" data-placeholder [class.routed-area-fit]="routedAreaFits()">
           <router-outlet />
         </div>
       </main>

@@ -2,12 +2,12 @@ import { Routes } from '@angular/router';
 import { FEATURE_ROUTES } from './features/index';
 
 export const routes: Routes = [
-  ...FEATURE_ROUTES,
   {
     path: '',
     loadComponent: () => import('./landing/landing.component').then(m => m.LandingComponent),
     pathMatch: 'full'
   },
+  ...FEATURE_ROUTES,
   {
     path: 'login',
     loadComponent: () => import('./login/login.component').then(m => m.LoginComponent),
