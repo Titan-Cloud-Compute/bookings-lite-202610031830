@@ -69,7 +69,7 @@ export class AvailabilityService {
     const day = parseDay(date);
     if (!day) return [];
     const dayEnd = new Date(day.getTime() + 24 * 60 * 60_000);
-    const [windows, blocks] = await Promise.all([
+    const [windows, blocks, booked] = await Promise.all([
       this.prisma.availabilityWindow.findMany({
         where: { providerId: service.providerId, dayOfWeek: day.getUTCDay() },
         select: WINDOW_SELECT,
@@ -78,7 +78,16 @@ export class AvailabilityService {
         where: { providerId: service.providerId, startsAt: { lt: dayEnd }, endsAt: { gt: day } },
         select: BLOCK_SELECT,
       }),
+      this.prisma.appointment.findMany({
+        where: { providerId: service.providerId, status: 'BOOKED', startsAt: { lt: dayEnd }, endsAt: { gt: day } },
+        select: { startsAt: true, endsAt: true },
+      }),
     ]);
-    return computeBookableSlots(windows, blocks, service.durationMinutes, date);
+    // A booked appointment removes its slot from availability.
+    return computeBookableSlots(windows, blocks, service.durationMinutes, date).filter((slot) => {
+      const s = Date.parse(slot.startsAt);
+      const e = Date.parse(slot.endsAt);
+      return !booked.some((b) => b.startsAt.getTime() < e && b.endsAt.getTime() > s);
+    });
   }
 }
