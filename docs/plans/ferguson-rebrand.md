@@ -34,4 +34,5 @@ Every booking feature must keep working: services, availability, book, cancel, r
 ## Cursor
 - 2026-10-06: plan written; oracles verified fail-before. Tree armed: rootId 4d6143d3-f49f-445c-ad39-52d1ecc174af, workflow goal-tree-4d6143d3…, backstop wakeup 1407d273 (90 min).
 - RISK: local commits (plan + oracles, 821b558) could not be pushed (no GitHub creds in this worktree); origin/main is still 2f7a3bf. If workers fail on `test -f docs/plans/oracles/...`, that is why. Fix the push path, then re-arm.
+- 2026-10-06 23:52: tree 4d6143d3 L1 hit REDECOMPOSE (3x rc1). Root cause: oracle scripts not on origin → attempt 3 failed `test -f`; attempts 1-2 wrote their own (weaker) oracle files. Attempt 1 code (worker/a43e2906) was correct. Cancelled 4d6143d3. Re-armed as ferguson-rebrand.v2.tree.json with oracles embedded (base64) in each verify expr so no push is needed.
 - Next: on terminal wake → re-run the oracles on merged main, rebuild, seed the 5 services as MANAGER, run live checks, take screenshots.
