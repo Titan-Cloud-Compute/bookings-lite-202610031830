@@ -32,4 +32,6 @@ Every booking feature must keep working: services, availability, book, cancel, r
 4. Screenshots of / and /book; reply with SHA + staging URL.
 
 ## Cursor
-- 2026-10-06: plan written, tree armed next.
+- 2026-10-06: plan written; oracles verified fail-before. Tree armed: rootId 4d6143d3-f49f-445c-ad39-52d1ecc174af, workflow goal-tree-4d6143d3…, backstop wakeup 1407d273 (90 min).
+- RISK: local commits (plan + oracles, 821b558) could not be pushed (no GitHub creds in this worktree); origin/main is still 2f7a3bf. If workers fail on `test -f docs/plans/oracles/...`, that is why. Fix the push path, then re-arm.
+- Next: on terminal wake → re-run the oracles on merged main, rebuild, seed the 5 services as MANAGER, run live checks, take screenshots.
