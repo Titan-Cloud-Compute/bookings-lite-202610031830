@@ -12,6 +12,11 @@
       "title": "L1: make GET /api/services public (read-only bookable list) so anonymous visitors see service cards",
       "doneWhen": "bash docs/plans/oracles/l1-public-services.sh prints L1-OK",
       "verify": { "kind": "cmd", "expr": "bash docs/plans/oracles/l1-public-services.sh", "rung": 2, "changeType": "logic" },
+      "research": {
+        "external": "NestJS docs, Security > Authentication > 'Enable authentication globally' (@Public() via SetMetadata(IS_PUBLIC_KEY) read by Reflector.getAllAndOverride in the global guard), docs.nestjs.com/security/authentication, accessed 2026-10-06; matches the NestJS version in backend/package.json.",
+        "alternatives": "Rejected: a new public route/controller (operator forbade new API routes); showing cards only after login (operator chose option a); hard-coding cards (brief forbids). Chosen: reuse the existing @Public() decorator on the existing read-only list.",
+        "reference": "In-repo: backend/src/auth/decorators/public.decorator.ts and its use in backend/src/auth/auth.controller.ts; backend/src/auth/jwt-auth.guard.ts honours IS_PUBLIC_KEY."
+      },
       "files": [
         "backend/src/features/services/services.controller.ts",
         "backend/src/features/services/services.spec.ts"
@@ -29,6 +34,11 @@
       "title": "L2: Ferguson brand tokens, sticky navy site header/footer, new landing page, shared ServiceCard used by / and /services",
       "doneWhen": "bash docs/plans/oracles/l2-brand-landing.sh prints L2-OK",
       "verify": { "kind": "cmd", "expr": "bash docs/plans/oracles/l2-brand-landing.sh", "rung": 2, "changeType": "logic" },
+      "research": {
+        "external": "Angular docs (angular.dev) — standalone components with signal input() for presentational components, and 'Styling components' using CSS custom properties; W3C Design Tokens Community Group format (2025.10) for semantic token naming (primary / cta / text). Accessed 2026-10-06.",
+        "alternatives": "Rejected: Angular Material / Tailwind / an icon library (no new dependencies allowed); duplicating card markup in / and /services (drift). Chosen: one presentational ServiceCardComponent, semantic tokens in tokens.css, inline SVG pest icons.",
+        "reference": "In-repo: web/src/styles/tokens.css token convention; web/src/app/shared/toast-host.component.ts as a small standalone shared component. Visual refs: aptivepestcontrol.com Provo branch page, americanpest.net Washington DC page."
+      },
       "files": [
         "web/src/index.html",
         "web/src/styles/tokens.css",
@@ -62,6 +72,11 @@
       "title": "L3: restyle booking pages (book, my appointments, provider dashboard) — colours and spacing only",
       "doneWhen": "bash docs/plans/oracles/l3-booking-restyle.sh prints L3-OK",
       "verify": { "kind": "cmd", "expr": "bash docs/plans/oracles/l3-booking-restyle.sh", "rung": 2, "changeType": "logic" },
+      "research": {
+        "external": "Angular docs (angular.dev) 'Styling components' — component-scoped styles consuming CSS custom properties from a global token sheet. Accessed 2026-10-06.",
+        "alternatives": "no viable alternative — the brief allows colours and spacing only, so only the components' styles blocks change; template or logic edits are rejected to protect booking behaviour.",
+        "reference": "In-repo: web/src/styles/tokens.css tokens; services.component.ts card styling as the baseline."
+      },
       "files": [
         "web/src/app/features/appointments/book-appointment.component.ts",
         "web/src/app/features/appointments/my-appointments.component.ts",
