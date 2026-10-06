@@ -16,9 +16,9 @@ import { StickyFooterComponent } from '../shared/sticky-footer.component';
     <div class="about-page">
       <div class="brand-panel">
         <div class="brand-content">
-          <p class="brand-eyebrow">{{ 'Enterprise Template' }}</p>
-          <h1 class="brand-title">{{ 'Enterprise' }}<br>{{ 'Platform' }}</h1>
-          <p class="brand-tagline">{{ 'An enterprise application platform.' }}</p>
+          <p class="brand-eyebrow">{{ 'Pest Control' }}</p>
+          <h1 class="brand-title">{{ 'Ferguson' }}<br>{{ 'Pest Control' }}</h1>
+          <p class="brand-tagline">{{ 'Pest-free homes, booked in minutes.' }}</p>
           <ol class="journey">
             @for (step of journey; track step.key) {
               <li class="journey-item">

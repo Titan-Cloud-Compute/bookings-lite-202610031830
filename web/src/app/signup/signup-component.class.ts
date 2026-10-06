@@ -26,7 +26,7 @@ import { TokenModelResolver } from './signup-admin-model';
           </svg>
         </div>
         <h1>Create Account</h1>
-        <p class="subtitle">Join the Enterprise Platform</p>
+        <p class="subtitle">Join Ferguson Pest Control</p>
 
         <form (ngSubmit)="onSignup()" class="signup-form">
           @if (error()) {

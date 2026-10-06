@@ -38,6 +38,43 @@
   --radius-circle: 50%;
 }
 
+/* ── Global button utilities ─────────────────────────────────────────────────
+ * Green is used ONLY for buttons (never as a background tint or text colour).
+ * Use .btn-primary or the alias .btn-cta wherever a call-to-action is needed. */
+.btn-primary,
+.btn-cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.375rem;
+  padding: 0.75rem 1.5rem;
+  background: var(--color-cta);
+  color: var(--color-on-primary);
+  border: none;
+  border-radius: var(--radius-btn);
+  font-family: var(--font-body);
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  line-height: 1;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background 0.15s ease, box-shadow 0.15s ease;
+  white-space: nowrap;
+}
+.btn-primary:hover,
+.btn-cta:hover {
+  background: var(--color-cta-hover);
+  box-shadow: var(--shadow-md);
+}
+.btn-primary:disabled,
+.btn-cta:disabled,
+.btn-primary[disabled],
+.btn-cta[disabled] {
+  opacity: 0.55;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
 /* Global Reset & Base Styles */
 *,
 *::before,
