@@ -1,0 +1,81 @@
+{
+  "title": "Rebrand Bookings Lite as Ferguson Pest Control (frontend + public service list)",
+  "doneWhen": "All three leaf oracles pass on main: public GET /api/services, Ferguson brand shell + landing + shared service card, booking pages restyled with no behaviour change; web prod build green.",
+  "verify": {
+    "kind": "cmd",
+    "expr": "bash docs/plans/oracles/l1-public-services.sh && bash docs/plans/oracles/l2-brand-landing.sh && bash docs/plans/oracles/l3-booking-restyle.sh",
+    "rung": 2,
+    "changeType": "logic"
+  },
+  "children": [
+    {
+      "title": "L1: make GET /api/services public (read-only bookable list) so anonymous visitors see service cards",
+      "doneWhen": "bash docs/plans/oracles/l1-public-services.sh prints L1-OK",
+      "verify": { "kind": "cmd", "expr": "bash docs/plans/oracles/l1-public-services.sh", "rung": 2, "changeType": "logic" },
+      "files": [
+        "backend/src/features/services/services.controller.ts",
+        "backend/src/features/services/services.spec.ts"
+      ],
+      "implPlan": {
+        "files": [
+          "backend/src/features/services/services.controller.ts",
+          "backend/src/features/services/services.spec.ts"
+        ],
+        "change": "On ServicesController.listBookable replace @RequireUser() with @Public() (import from ../../auth/decorators/public.decorator — the same decorator auth.controller.ts uses; JwtAuthGuard honours IS_PUBLIC_KEY, RolesGuard passes when no roles metadata). Keep listMine and create exactly as they are (@RequireManager()). Do not change the route path, the service layer, the schema or any other backend file. In services.spec.ts add a test that Reflect.getMetadata(IS_PUBLIC_KEY, ServicesController.prototype.listBookable) is true and that listMine/create are not public.",
+        "selfCheck": "bash docs/plans/oracles/l1-public-services.sh"
+      }
+    },
+    {
+      "title": "L2: Ferguson brand tokens, sticky navy site header/footer, new landing page, shared ServiceCard used by / and /services",
+      "doneWhen": "bash docs/plans/oracles/l2-brand-landing.sh prints L2-OK",
+      "verify": { "kind": "cmd", "expr": "bash docs/plans/oracles/l2-brand-landing.sh", "rung": 2, "changeType": "logic" },
+      "files": [
+        "web/src/index.html",
+        "web/src/styles/tokens.css",
+        "web/src/styles.css",
+        "web/src/app/landing/landing.component.ts",
+        "web/src/app/features/services/services.component.ts",
+        "web/src/app/shared/site-header.component.ts",
+        "web/src/app/shared/site-footer.component.ts",
+        "web/src/app/shared/service-card.component.ts",
+        "web/src/app/shared/pest-icons.ts",
+        "web/src/app/shared/layout.component.ts",
+        "web/src/app/about/about.component.ts",
+        "web/src/app/terms/terms.component.ts",
+        "web/src/app/privacy/privacy.component.ts",
+        "web/src/app/signup/signup-component.class.ts",
+        "web/public/manifest.webmanifest"
+      ],
+      "implPlan": {
+        "files": [
+          "web/src/index.html", "web/src/styles/tokens.css", "web/src/styles.css",
+          "web/src/app/landing/landing.component.ts", "web/src/app/features/services/services.component.ts",
+          "web/src/app/shared/site-header.component.ts", "web/src/app/shared/site-footer.component.ts",
+          "web/src/app/shared/service-card.component.ts", "web/src/app/shared/pest-icons.ts",
+          "web/src/app/shared/layout.component.ts"
+        ],
+        "change": "Brand = 'Ferguson Pest Control' (text logo, no image). Phone (814) 942-2290, link tel:+18149422290. Design refs: aptivepestcontrol.com (white, charcoal text, ONE bright green used only for buttons, repeated 'Book a treatment' CTAs, generous white space, illustrated pest icon cards) and americanpest.net (navy/white, sticky header with phone, credibility badges in hero, scannable service cards). (1) index.html: <title>Ferguson Pest Control | Book pest control online</title>, meta description + theme-color #0B2A4A; update the loading spinner colour comment/value; replace every 'Enterprise Platform'/'Enterprise Template'/'Enterprise application template' string anywhere under web/ (index.html, about, terms, privacy, signup-component.class.ts, layout.component.ts, manifest) with 'Ferguson Pest Control'. (2) tokens.css: --color-primary #0B2A4A (+ matching -rgb, -hover, -light, -600, -900 navy shades), add --color-cta #2DB34A and --color-cta-hover (darker green e.g. #24913C), --color-text-primary #2B2B2B, --color-bg-primary #ffffff, --color-bg-secondary a near-white. Remove the DO-NOT-EDIT header claim only if needed; keep all existing token names. (3) styles.css: global .btn-primary { background: var(--color-cta); color: var(--color-on-primary); ... } with :hover var(--color-cta-hover) and :disabled state; also a .btn-cta alias. Green is used ONLY for buttons. (4) New standalone SiteHeaderComponent (selector app-site-header): position: sticky; top: 0; z-index; background var(--color-primary); white text logo 'Ferguson Pest Control' linking to /; nav links Services (to the landing services section, e.g. routerLink '/' fragment 'services'), Book (/book), My appointments (/appointments), Log in (/login); right side click-to-call '(814) 942-2290' (href tel:+18149422290) and a green 'Book a treatment' button routerLink /book. Responsive (collapse nav on small screens). (5) New SiteFooterComponent (app-site-footer) with brand + phone. (6) New presentational ServiceCardComponent (selector app-service-card, inputs: name, durationMinutes, priceCents, optional showBook boolean) — pest icon chosen by keyword in the name (termite, rodent/mouse, mosquito, bed bug, default bug) from inline SVGs in shared/pest-icons.ts, short description by the same keyword map with a generic fallback, duration 'N min', price formatted $X, and when showBook a green 'Book' button routerLink /book. NO new npm dependencies. (7) Landing (/): app-site-header; hero with h1 'Pest-free homes, booked in minutes' and subline 'Pick a treatment, choose a time that suits you, and a licensed local technician will be there.'; green 'Book a treatment' button to /book; badge row 'Licensed & insured', 'Same-week appointments', 'Reminders before every visit', 'Satisfaction guaranteed'; section id='services' with a responsive grid of app-service-card loaded from GET api/services (now public; withCredentials true; handle error/empty state with a friendly message) — never hard-code the service names; 3-step 'How it works': Choose a treatment, Pick a time, We arrive; final green CTA band with 'Book a treatment'; app-site-footer with the phone. (8) /services (services.component.ts): render each row of 'Your services' with app-service-card (showBook false) inside the existing data-testid='service-list' / 'service-item' elements; keep the create form, every data-testid, field and the api/services/mine + POST api/services calls exactly as is. (9) layout.component.ts (signed-in shell): only brand strings/colours — use the navy primary for its header/sidebar brand; do not change its routing, auth or nav items. Do not touch: backend, prisma, route paths (app.routes.ts, features/index.ts), login/signup flow logic, book/appointments/provider-dashboard components (L3 owns them). Use var(--token) only in component styles, never raw hex.",
+        "selfCheck": "bash docs/plans/oracles/l2-brand-landing.sh"
+      }
+    },
+    {
+      "title": "L3: restyle booking pages (book, my appointments, provider dashboard) — colours and spacing only",
+      "doneWhen": "bash docs/plans/oracles/l3-booking-restyle.sh prints L3-OK",
+      "verify": { "kind": "cmd", "expr": "bash docs/plans/oracles/l3-booking-restyle.sh", "rung": 2, "changeType": "logic" },
+      "files": [
+        "web/src/app/features/appointments/book-appointment.component.ts",
+        "web/src/app/features/appointments/my-appointments.component.ts",
+        "web/src/app/features/appointments/provider-dashboard.component.ts"
+      ],
+      "implPlan": {
+        "files": [
+          "web/src/app/features/appointments/book-appointment.component.ts",
+          "web/src/app/features/appointments/my-appointments.component.ts",
+          "web/src/app/features/appointments/provider-dashboard.component.ts"
+        ],
+        "change": "Edit ONLY the styles: [...] block (and, if needed, purely presentational wrapper classes) of these three components. Ferguson Pest Control look: h1/h2 color var(--color-primary) (navy), body text var(--color-text-primary) (charcoal), cards on var(--color-surface) with var(--color-border), var(--radius-lg), var(--shadow-sm), generous padding (1.75-2rem) and spacing; selected slot uses navy border + var(--color-primary-light) background; primary/confirm buttons rely on the global .btn-primary (green var(--color-cta), defined in styles.css by a sibling task — reference var(--color-cta)/var(--color-cta-hover) if you style a button locally). Replace every raw colour (hex or 'white') in these styles blocks with tokens (var(--color-surface) for white). Do NOT change any template element, form field, data-testid, ngModel, (click)/(ngSubmit)/(ngModelChange) handler, routerLink, id/name attribute, http call, api path or TypeScript logic.",
+        "selfCheck": "bash docs/plans/oracles/l3-booking-restyle.sh"
+      }
+    }
+  ]
+}
