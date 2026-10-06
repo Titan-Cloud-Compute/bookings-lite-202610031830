@@ -74,14 +74,15 @@ function tomorrowUtc(): string {
   `,
   styles: [`
     .book-page { max-width: 800px; margin: 0 auto; padding: 2rem 1rem; }
-    .page-header { margin-bottom: 1.5rem; }
-    h1 { font-size: var(--font-size-xl); color: var(--color-text-primary); margin: 0 0 0.25rem; }
+    .page-header { margin-bottom: 1.75rem; }
+    h1 { font-size: var(--font-size-xl); color: var(--color-primary); margin: 0 0 0.25rem; }
+    h2 { font-size: var(--font-size-lg); color: var(--color-primary); margin: 0 0 1rem; }
     .subtitle { color: var(--color-text-secondary); font-size: var(--font-size-sm); margin: 0; }
-    .card { background: white; border-radius: var(--radius-card); border: 1px solid var(--color-border); padding: 1.5rem; margin-bottom: 1.5rem; }
+    .card { background: var(--color-surface); border-radius: var(--radius-lg); border: 1px solid var(--color-border); box-shadow: var(--shadow-sm); padding: 2rem; margin-bottom: 1.75rem; }
     .form-group { display: flex; flex-direction: column; gap: 0.25rem; margin-bottom: 1rem; }
-    .slot-list { list-style: none; padding: 0; margin: 0 0 1rem; display: flex; flex-wrap: wrap; gap: 0.5rem; }
-    .slot { padding: 0.5rem 0.75rem; border: 1px solid var(--color-border); border-radius: var(--radius-card); background: white; cursor: pointer; }
-    .slot.selected { border-color: var(--color-text-primary); font-weight: 600; }
+    .slot-list { list-style: none; padding: 0; margin: 0 0 1.25rem; display: flex; flex-wrap: wrap; gap: 0.5rem; }
+    .slot { padding: 0.5rem 0.75rem; border: 1px solid var(--color-border); border-radius: var(--radius-md); background: var(--color-surface); cursor: pointer; }
+    .slot.selected { border-color: var(--color-primary); background: var(--color-primary-light); font-weight: 600; }
     .empty { color: var(--color-text-secondary); }
     .error { color: var(--color-error); }
     .success { color: var(--color-text-primary); }

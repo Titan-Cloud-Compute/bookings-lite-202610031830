@@ -61,13 +61,13 @@ const LATE_WINDOW_MS = 24 * 60 * 60 * 1000;
   `,
   styles: [`
     .appts-page { max-width: 800px; margin: 0 auto; padding: 2rem 1rem; }
-    .page-header { margin-bottom: 1.5rem; }
-    h1 { font-size: var(--font-size-xl); color: var(--color-text-primary); margin: 0 0 0.25rem; }
+    .page-header { margin-bottom: 1.75rem; }
+    h1 { font-size: var(--font-size-xl); color: var(--color-primary); margin: 0 0 0.25rem; }
     .subtitle { color: var(--color-text-secondary); font-size: var(--font-size-sm); margin: 0; }
-    .card { background: white; border-radius: var(--radius-card); border: 1px solid var(--color-border); padding: 1.5rem; margin-bottom: 1.5rem; }
+    .card { background: var(--color-surface); border-radius: var(--radius-lg); border: 1px solid var(--color-border); box-shadow: var(--shadow-sm); padding: 2rem; margin-bottom: 1.75rem; }
     .appt-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 0.5rem; }
-    .appt { display: flex; flex-wrap: wrap; align-items: center; gap: 0.75rem; padding: 0.5rem 0; border-bottom: 1px solid var(--color-border); }
-    .when { font-weight: 600; }
+    .appt { display: flex; flex-wrap: wrap; align-items: center; gap: 0.75rem; padding: 0.75rem 0; border-bottom: 1px solid var(--color-border); }
+    .when { font-weight: 600; color: var(--color-text-primary); }
     .status, .empty { color: var(--color-text-secondary); }
     .warning, .error { color: var(--color-error); }
     .success { color: var(--color-text-primary); }
