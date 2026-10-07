@@ -45,8 +45,9 @@ if fail:
     print('FAIL:'); [print('  ' + x) for x in fail]; sys.exit(1)
 print('static OK')
 PY
-git fetch -q origin main || true
-if ! git diff --quiet origin/main -- web/package.json web/package-lock.json; then echo 'FAIL: dependency change'; exit 1; fi
+# No-remote dependency guard: blob hashes of web/package.json + lock as on main 65a3f9d (oracle runs without an origin remote).
+[ "$(git hash-object web/package.json)" = "a7b6c59e634c294e60975547d0354f636c8608eb" ] || { echo 'FAIL: web/package.json changed (no new deps allowed)'; exit 1; }
+[ "$(git hash-object web/package-lock.json)" = "f34eaf09b9b6a8f0d95c2d11dfabdd3c7d2cdcff" ] || { echo 'FAIL: web/package-lock.json changed (no new deps allowed)'; exit 1; }
 cd web
 npm ci --include=dev >/dev/null 2>&1
 if ! npx ng build --configuration production >/tmp/ngb-l2.log 2>&1; then tail -40 /tmp/ngb-l2.log; exit 1; fi
