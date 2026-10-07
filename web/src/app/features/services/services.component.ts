@@ -2,6 +2,7 @@ import { Component, OnInit, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
+import { ServiceCardComponent } from '../../shared/service-card.component';
 
 export interface ProviderService {
   id: string;
@@ -14,7 +15,7 @@ export interface ProviderService {
 @Component({
   selector: 'app-services',
   standalone: true,
-  imports: [FormsModule],
+  imports: [FormsModule, ServiceCardComponent],
   template: `
     <div class="services-page">
       <header class="page-header">
@@ -46,8 +47,12 @@ export interface ProviderService {
         <ul class="service-list" data-testid="service-list">
           @for (s of services(); track s.id) {
             <li data-testid="service-item">
-              <span class="service-name">{{ s.name }}</span>
-              <span class="service-meta">{{ s.durationMinutes }} min · {{ formatPrice(s.priceCents) }}</span>
+              <app-service-card
+                [name]="s.name"
+                [durationMinutes]="s.durationMinutes"
+                [priceCents]="s.priceCents"
+                [showBook]="false"
+              ></app-service-card>
             </li>
           } @empty {
             <li class="empty" data-testid="service-empty">No services yet.</li>
