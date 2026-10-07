@@ -1,5 +1,6 @@
 import { BadRequestException } from '@nestjs/common';
 import type { Request } from 'express';
+import { IS_PUBLIC_KEY } from '../../auth/decorators/public.decorator';
 import { ServicesController } from './services.controller';
 import { ServicesService } from './services.service';
 import { CreateServiceSchema } from './services.schema';
@@ -48,5 +49,11 @@ describe('ServicesController', () => {
 
   it('schema accepts a valid payload', () => {
     expect(CreateServiceSchema.safeParse({ name: 'Massage', durationMinutes: '60', priceCents: 5000 }).success).toBe(true);
+  });
+
+  it('listBookable is public (IS_PUBLIC_KEY); listMine and create are not', () => {
+    expect(Reflect.getMetadata(IS_PUBLIC_KEY, ServicesController.prototype.listBookable)).toBe(true);
+    expect(Reflect.getMetadata(IS_PUBLIC_KEY, ServicesController.prototype.listMine)).toBeUndefined();
+    expect(Reflect.getMetadata(IS_PUBLIC_KEY, ServicesController.prototype.create)).toBeUndefined();
   });
 });
