@@ -4,11 +4,13 @@
 /* Never use raw hex (#...), rgb(), or named colors (red, navy, etc.) in         */
 /* component files. Use the nearest token instead.                               */
 :root {
-  --color-primary: #163e8c;
-  --color-primary-rgb: 22, 62, 140; /* for rgba(var(--color-primary-rgb), a) alpha tints */
-  --color-primary-hover: #10306e;
-  --color-primary-light: #e9eef9;
-  --color-primary-border: #163e8c33;
+  --color-primary: #0B2A4A;
+  --color-primary-rgb: 11, 42, 74; /* for rgba(var(--color-primary-rgb), a) alpha tints */
+  --color-primary-hover: #091f38;
+  --color-primary-light: #e4eaf2;
+  --color-primary-border: #0B2A4A33;
+  --color-cta: #2DB34A;
+  --color-cta-hover: #24913C;
   --color-accent: #b3364a;
   --color-accent-hover: #92293b;
   --color-accent-light: #f8e7ea;
@@ -17,7 +19,7 @@
   --color-bg-tertiary: #eceff5;
   --color-surface: #ffffff;
   --color-surface-hover: #f6f8fb;
-  --color-text-primary: #101828;
+  --color-text-primary: #2B2B2B;
   --color-text-secondary: #55627a;
   --color-text-tertiary: #75819a;
   --color-text-muted: #9aa4b8;
@@ -40,8 +42,8 @@
 /* ---- Extended palette (T1 tokenize, 2026-09-05): exact values previously hardcoded in components.
    Ramps: neutral/gray/info/success/warning/error/highlight/accent + on-primary text. Re-palette here only. ---- */
 :root {
-  --color-primary-600: #1a4699;
-  --color-primary-900: #0f2757;
+  --color-primary-600: #0d2240;
+  --color-primary-900: #060f1c;
   --color-primary-border-soft: #d4dfef;
   --color-on-primary: #ffffff;
   --color-on-primary-soft: #e6ecf7;

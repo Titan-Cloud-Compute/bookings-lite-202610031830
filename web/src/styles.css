@@ -266,3 +266,27 @@ body:has(app-intake .chat-window) app-root > app-intake > .intake-page {
 body:has(app-intake .chat-window) app-root > app-support-footer {
   flex: 0 0 auto;
 }
+
+/* ── Global CTA button (Ferguson brand) ────────────────────────────────── */
+.btn-primary, .btn-cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.75rem 1.5rem;
+  background: var(--color-cta);
+  color: var(--color-on-primary);
+  border: none;
+  border-radius: var(--radius-btn, 8px);
+  font-weight: 600;
+  font-size: var(--font-size-sm, 0.875rem);
+  cursor: pointer;
+  text-decoration: none;
+  transition: background 150ms ease;
+}
+.btn-primary:hover, .btn-cta:hover {
+  background: var(--color-cta-hover);
+}
+.btn-primary:disabled, .btn-cta:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}

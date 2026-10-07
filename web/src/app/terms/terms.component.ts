@@ -27,7 +27,7 @@ import { RouterLink } from '@angular/router';
           <section>
             <h2>1. Acceptance of Terms</h2>
             <p>
-              Welcome to the Enterprise Platform ("the Platform"). By accessing or using the Platform,
+              Welcome to Ferguson Pest Control ("the Platform"). By accessing or using the Platform,
               you agree to these Terms of Service. If you do not accept these terms, please do not use the Platform.
             </p>
           </section>

@@ -409,7 +409,7 @@ export class LayoutComponent implements OnInit {
   headerTitle = computed(() => {
     return this.auth.hasAdminRole()
       ? ('Administrator console')
-      : ('Enterprise Platform');
+      : ('Ferguson Pest Control');
   });
 
   // SHARED_NAV_ITEMS (Saved Searches) is appended for BOTH roles: saved
