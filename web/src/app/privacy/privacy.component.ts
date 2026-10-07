@@ -27,7 +27,7 @@ import { RouterLink } from '@angular/router';
           <section>
             <h2>1. Data Controller</h2>
             <p>
-              Example Org acts as the data controller for the Enterprise Platform.
+              Example Org acts as the data controller for the Ferguson Pest Control.
               This policy describes how we collect, use, store, and protect your personal data
               in accordance with applicable data protection law.
             </p>

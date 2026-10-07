@@ -38,6 +38,50 @@
   --radius-circle: 50%;
 }
 
+/* ── Global CTA button — Ferguson green ────────────────────────────────── */
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.75rem 1.5rem;
+  background: var(--color-cta);
+  color: var(--color-on-primary);
+  border: none;
+  border-radius: var(--radius-btn);
+  font-family: inherit;
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background 0.15s;
+}
+.btn-primary:hover {
+  background: var(--color-cta-hover);
+}
+.btn-primary:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+.btn-cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.75rem 1.5rem;
+  background: var(--color-cta);
+  color: var(--color-on-primary);
+  border: none;
+  border-radius: var(--radius-btn);
+  font-family: inherit;
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background 0.15s;
+}
+.btn-cta:hover {
+  background: var(--color-cta-hover);
+}
+
 /* Global Reset & Base Styles */
 *,
 *::before,
