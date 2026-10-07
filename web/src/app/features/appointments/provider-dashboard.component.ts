@@ -46,9 +46,9 @@ export interface UpcomingAppointment {
   styles: [`
     .provider-page { max-width: 800px; margin: 0 auto; padding: 2rem 1rem; }
     .page-header { margin-bottom: 1.5rem; }
-    h1 { font-size: var(--font-size-xl); color: var(--color-text-primary); margin: 0 0 0.25rem; }
+    h1 { font-size: var(--font-size-xl); color: var(--color-primary); margin: 0 0 0.25rem; }
     .subtitle { color: var(--color-text-secondary); font-size: var(--font-size-sm); margin: 0; }
-    .card { background: white; border-radius: var(--radius-card); border: 1px solid var(--color-border); padding: 1.5rem; margin-bottom: 1.5rem; }
+    .card { background: var(--color-surface); border-radius: var(--radius-card); border: 1px solid var(--color-border); padding: 1.75rem; margin-bottom: 1.5rem; box-shadow: var(--shadow-sm); }
     .upcoming-list { list-style: none; margin: 0; padding: 0; }
     .upcoming-item { display: flex; gap: 1rem; flex-wrap: wrap; padding: 0.75rem 0; border-bottom: 1px solid var(--color-border); }
     .upcoming-item:last-child { border-bottom: none; }
