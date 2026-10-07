@@ -1,7 +1,8 @@
 import { BadRequestException, Body, Controller, Get, Post, Req, UnauthorizedException, UseGuards } from '@nestjs/common';
 import type { Request } from 'express';
+import { Public } from '../../auth/decorators/public.decorator';
 import { JwtAuthGuard } from '../../auth/jwt-auth.guard';
-import { RequireManager, RequireUser, RolesGuard } from '../../auth/roles.guard';
+import { RequireManager, RolesGuard } from '../../auth/roles.guard';
 import { CreateServiceSchema } from './services.schema';
 import { ServicesService, ServiceView } from './services.service';
 
@@ -10,9 +11,9 @@ import { ServicesService, ServiceView } from './services.service';
 export class ServicesController {
   constructor(private readonly services: ServicesService) {}
 
-  /** Bookable services (any signed-in user — consumed by book-appointment). */
+  /** Bookable services (anonymous-readable — consumed by public service cards). */
   @Get()
-  @RequireUser()
+  @Public()
   listBookable(): Promise<ServiceView[]> {
     return this.services.listBookable();
   }
